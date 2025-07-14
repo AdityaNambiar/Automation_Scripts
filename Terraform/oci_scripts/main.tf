@@ -13,4 +13,6 @@ resource "oci_core_subnet" "tf_oci_privsubnet" {
     "CreatedBy" = "Terraform Scripts"
     "CreatedOn" = "2025-07-14"
   }
+  prohibit_internet_ingress  = true
+  prohibit_public_ip_on_vnic = true
 }
