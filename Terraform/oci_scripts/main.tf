@@ -4,13 +4,12 @@ provider "oci" {
   config_file_profile = var.configProfile
 }
 
-resource "oci_core_vcn" "terraform_oci_vcn" {
-  dns_label      = "tf_oci_vcn"
-  cidr_block     = "192.168.0.0/16"
+resource "oci_core_nat_gateway" "tf_oci_nat_gw" {
+  vcn_id         = var.oci_vcn_id
   compartment_id = var.compartmentId
-  display_name   = "Terraform OCI VCN"
+  display_name   = "tf_oci_nat_gw"
   freeform_tags = {
-    "CreatedBy"   = "Terraform"
-    "Environment" = "Development"
+    "CreatedBy" = "Terraform Scripts"
+    "CreatedOn" = "2025-07-14"
   }
 }

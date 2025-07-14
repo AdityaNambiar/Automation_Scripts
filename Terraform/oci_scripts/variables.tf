@@ -13,3 +13,9 @@ variable "compartmentId" {
   type        = string
   sensitive   = true
 }
+
+variable "oci_vcn_id" {
+  description = "OCID of the VCN where the NAT Gateway will be created"
+  type        = string
+  sensitive   = true
+}
