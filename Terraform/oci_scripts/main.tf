@@ -15,5 +15,5 @@ resource "oci_core_subnet" "tf_oci_privsubnet" {
   }
   prohibit_internet_ingress  = true
   prohibit_public_ip_on_vnic = true
-  dns_label = "tf_privsubnet"
+  dns_label                  = "tfprivsubnet"
 }
