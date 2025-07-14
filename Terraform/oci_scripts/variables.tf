@@ -1,15 +1,15 @@
 variable "authToken" {
-    type = string
-    description = "Value of the auth token for OCI authentication"
-    sensitive = true
+  type        = string
+  description = "Value of the auth token for OCI authentication"
+  sensitive   = true
 }
 
 variable "configProfile" {
-    default = "DEFAULT"
+  default = "DEFAULT"
 }
 
 variable "compartmentId" {
-    description = "Value of the compartment OCID where the resources will be created"
-    type = string
-    sensitive = true
+  description = "Value of the compartment OCID where the resources will be created"
+  type        = string
+  sensitive   = true
 }
