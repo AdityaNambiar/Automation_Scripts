@@ -7,7 +7,7 @@ provider "oci" {
 resource "oci_core_subnet" "tf_oci_privsubnet" {
   vcn_id         = var.oci_vcn_id
   compartment_id = var.compartmentId
-  cidr_block     = "10.0.0.0/24"
+  cidr_block     = "10.0.1.0/24"
   display_name   = "tf_oci_privsubnet"
   freeform_tags = {
     "CreatedBy" = "Terraform Scripts"
