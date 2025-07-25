@@ -23,7 +23,7 @@ resource "oci_core_vcn" "vcn1" {
     "CreatedBy" = "Terraform Scripts"
     "CreatedOn" = "2025-07-25"
   }
-  dns_label     = "ocivcn1"
+  dns_label = "ocivcn1"
 }
 
 /**
@@ -40,7 +40,7 @@ resource "oci_core_subnet" "vcn1_subnet1" {
   freeform_tags = {
     "CreatedBy" = "Terraform Scripts"
     "CreatedOn" = "2025-07-25"
-  } 
+  }
   prohibit_internet_ingress  = false // Set to true if you want to restrict internet ingress
   prohibit_public_ip_on_vnic = false // Set to true if you want to restrict public IPs
   dns_label                  = "ocisubnet1"
@@ -69,8 +69,8 @@ resource "oci_core_internet_gateway" "inet_gateway1" {
           It contains a route rule that allows traffic to the internet through the Internet Gateway.
 */
 resource "oci_core_default_route_table" "std_route_tbl" {
-  manage_default_resource_id = oci_core_subnet.vcn1_subnet1.default_route_table_id
-  
+  manage_default_resource_id = oci_core_vcn.vcn1.default_route_table_id
+
   compartment_id = var.compartmentId
   display_name   = "oci_learn_std_route_tbl"
   freeform_tags = {
@@ -78,10 +78,10 @@ resource "oci_core_default_route_table" "std_route_tbl" {
     "CreatedOn" = "2025-07-25"
   }
   route_rules {
-    destination = "0.0.0.0/0"
-    destination_type = "SERVICE_CIDR" // This specifies the type of destination like CIDR_BLOCK or SERVICE_CIDR
+    destination       = "0.0.0.0/0"
+    destination_type  = "SERVICE_CIDR"                             // This specifies the type of destination like CIDR_BLOCK or SERVICE_CIDR
     network_entity_id = oci_core_internet_gateway.inet_gateway1.id // Here we give target as Internet Gateway
-    route_type = "STATIC" // This specifies that this is a static route manually defined in the route table by user
+    route_type        = "STATIC"                                   // This specifies that this is a static route manually defined in the route table by user
   }
 }
 
@@ -93,7 +93,7 @@ resource "oci_core_default_route_table" "std_route_tbl" {
           It contains ingress rules that allow HTTP traffic on port 80 from any source.
 */
 resource "oci_core_default_security_list" "std_sec_list" {
-  manage_default_resource_id = oci_core_subnet.vcn1_subnet1.default_security_list_id
+  manage_default_resource_id = oci_core_vcn.vcn1.default_security_list_id
 
   compartment_id = var.compartmentId
   display_name   = "oci_learn_std_sec_list"
@@ -101,14 +101,14 @@ resource "oci_core_default_security_list" "std_sec_list" {
     "CreatedBy" = "Terraform Scripts"
     "CreatedOn" = "2025-07-25"
   }
-  
+
   // Ingress security rules allow incoming traffic to the subnet only on port 80 (HTTP).
   ingress_security_rules {
     protocol = "tcp"
-    source   = "0.0.0.0/0"  // This allows all incoming traffic from any source
+    source   = "0.0.0.0/0" // This allows all incoming traffic from any source
     tcp_options {
-      max = 80 
-      min = 80  
+      max = 80
+      min = 80
     }
   }
 }
