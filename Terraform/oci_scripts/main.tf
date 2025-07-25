@@ -20,7 +20,7 @@ resource "oci_core_vcn" "vcn1" {
   cidr_block     = "10.0.0.0/16"
   display_name   = "oci_learn_vcn_1"
   freeform_tags = {
-    "CreatedBy" = "Terraform Scripts"
+    "CreatedBy" = "Terraform Scripts - VCN"
     "CreatedOn" = "2025-07-25"
   }
   dns_label = "ocivcn1"
@@ -38,7 +38,7 @@ resource "oci_core_subnet" "vcn1_subnet1" {
   cidr_block     = "10.0.0.0/24"
   display_name   = "oci_learn_subnet_1"
   freeform_tags = {
-    "CreatedBy" = "Terraform Scripts"
+    "CreatedBy" = "Terraform Scripts - Subnet"
     "CreatedOn" = "2025-07-25"
   }
   prohibit_internet_ingress  = false // Set to true if you want to restrict internet ingress
@@ -57,7 +57,7 @@ resource "oci_core_internet_gateway" "inet_gateway1" {
   vcn_id         = oci_core_vcn.vcn1.id
   display_name   = "oci_learn_inet_gateway_1"
   freeform_tags = {
-    "CreatedBy" = "Terraform Scripts"
+    "CreatedBy" = "Terraform Scripts- Internet Gateway"
     "CreatedOn" = "2025-07-25"
   }
 }
@@ -73,15 +73,11 @@ resource "oci_core_default_route_table" "std_route_tbl" {
 
   compartment_id = var.compartmentId
   display_name   = "oci_learn_std_route_tbl"
-  freeform_tags = {
-    "CreatedBy" = "Terraform Scripts"
-    "CreatedOn" = "2025-07-25"
-  }
+  
   route_rules {
     destination       = "0.0.0.0/0"
-    destination_type  = "SERVICE_CIDR"                             // This specifies the type of destination like CIDR_BLOCK or SERVICE_CIDR
+    destination_type  = "CIDR_BLOCK"                             // This specifies the type of destination like CIDR_BLOCK or SERVICE_CIDR
     network_entity_id = oci_core_internet_gateway.inet_gateway1.id // Here we give target as Internet Gateway
-    route_type        = "STATIC"                                   // This specifies that this is a static route manually defined in the route table by user
   }
 }
 
@@ -98,13 +94,13 @@ resource "oci_core_default_security_list" "std_sec_list" {
   compartment_id = var.compartmentId
   display_name   = "oci_learn_std_sec_list"
   freeform_tags = {
-    "CreatedBy" = "Terraform Scripts"
+    "CreatedBy" = "Terraform Scripts - Security List"
     "CreatedOn" = "2025-07-25"
   }
 
   // Ingress security rules allow incoming traffic to the subnet only on port 80 (HTTP).
   ingress_security_rules {
-    protocol = "tcp"
+    protocol = "6"
     source   = "0.0.0.0/0" // This allows all incoming traffic from any source
     tcp_options {
       max = 80
