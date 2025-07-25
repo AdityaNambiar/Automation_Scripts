@@ -100,12 +100,12 @@ resource "oci_core_default_security_list" "std_sec_list" {
 
   // Ingress security rules allow incoming traffic to the subnet only on port 80 (HTTP).
   ingress_security_rules {
-    protocol = "6"
+    protocol = "all"
     source   = "0.0.0.0/0" // This allows all incoming traffic from any source
-    tcp_options {
-      max = 80
-      min = 80
-    }
+  }
+  egress_security_rules {
+    protocol = "all"
+    destination = "0.0.0.0/0" // This allows all outgoing traffic to any destination
   }
 }
 
