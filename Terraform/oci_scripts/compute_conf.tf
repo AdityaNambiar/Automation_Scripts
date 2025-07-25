@@ -2,6 +2,14 @@
 @author: Aditya Nambiar
 @date: 2025-07-25
 */
+
+data "oci_core_images" "oci_learn_imgs" {
+  compartment_id           = var.compartmentId
+  operating_system         = "Oracle Linux"
+  operating_system_version = "9"
+  shape = "VM.Standard.E2.1.Micro" // Ensure this shape is available in your region
+}
+
 resource "oci_core_instance" "oci_learn_inst1" {
   availability_domain = var.availabilityDomain
   compartment_id      = var.compartmentId
@@ -19,10 +27,10 @@ resource "oci_core_instance" "oci_learn_inst1" {
   }
   source_details {
     source_type = "image"
-
+    source_id   = data.oci_core_images.oci_learn_imgs.images[0].id // Use the first image from the filtered lis
     instance_source_image_filter_details {
       operating_system         = "Oracle Linux"
-      operating_system_version = "8.6"
+      operating_system_version = "9"
       compartment_id           = var.compartmentId
     }
   }
