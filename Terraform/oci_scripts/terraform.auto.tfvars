@@ -1,0 +1,5 @@
+compartmentId      = "ocid1.tenancy.oc1..aaaaaaaaqp62oj6rwtryetqsgfawpqabixaqxihevyj23sag3rftzkr5xlda"
+authToken          = "SecurityToken"
+oci_vcn_id         = "ocid1.vcn.oc1.ap-mumbai-1.amaaaaaa2pzxftaa7bet5y2olfinad7eqsps5ntw66tz532qjg7en7hgkxeq"
+availabilityDomain = "BtMd:AP-MUMBAI-1-AD-1"
+sshPublicKeyPath   = "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQC+/XsIos/iB3ysD56RTRCJgfpEqcSNQKfEPI5PTHOzx695NeXT+/ZzNXzymqP8Ez4d7s3Dzqu0Wt/fyko2Q3KNIiVVTk0sUH4+3P37NYFBg4KHJRWpLA0rdIgB3q+THlj5Td8DAM5Inw77dN1cJwwWNuiTrmuI6rE1d/ZMnKR6OvEgcwwSw+LjFLrx+ywfkYSG4iokHy7cNRXtM1HXsfw/JGPeLpp58nLlcPmb/rHNRtIMNj6NGSu5DmdPL1+JdFgXbIMssJ8yCGWEXVTbawx9T6tYMRTpsztlkQQTm/+mFuvPuXzYRU6vYzhqCXEjkwFYtOCUGScwBIbbI36PtrYv Aditya@AdityaN-HP"

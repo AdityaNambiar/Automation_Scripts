@@ -73,10 +73,10 @@ resource "oci_core_default_route_table" "std_route_tbl" {
 
   compartment_id = var.compartmentId
   display_name   = "oci_learn_std_route_tbl"
-  
+
   route_rules {
     destination       = "0.0.0.0/0"
-    destination_type  = "CIDR_BLOCK"                             // This specifies the type of destination like CIDR_BLOCK or SERVICE_CIDR
+    destination_type  = "CIDR_BLOCK"                               // This specifies the type of destination like CIDR_BLOCK or SERVICE_CIDR
     network_entity_id = oci_core_internet_gateway.inet_gateway1.id // Here we give target as Internet Gateway
   }
 }
