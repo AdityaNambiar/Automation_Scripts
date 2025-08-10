@@ -158,3 +158,6 @@ K8s / Kubernetes Architecture:
 - A "ReplicaSet" is one of the Kubernetes Controller which is declared in a Deployment YAML.
 - This is where Engineers provide the desired number of replicas they want, for a deployment.
 - A "ReplicaSet" is managed by Deployments automatically.
+
+
+* Services *
