@@ -5,3 +5,7 @@
 token.txt
 Terraform/oci_scripts/.terraform/providers/registry.terraform.io/oracle/oci/7.9.0/windows_amd64/terraform-provider-oci_v7.9.0
 Terraform/oci_scripts/ssh_pair/*
+Minikube/logo.ico 
+Minikube/minikube.exe 
+Minikube/uninstall.exe 
+Minikube/update_path.ps1

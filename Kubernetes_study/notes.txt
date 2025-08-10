@@ -1,0 +1,160 @@
+Kubernetes notes:
+
+Benefits with Containers:
+
+1. Lightweight in nature:
+	-> Use resources from system on which they run on.
+2. Easy to ship / deploy i.e. Portable
+	-> Because the size of a container is very less compared to a VM snapshot.
+	
+Problems with Containers:
+
+1. Containers are 'Ephemeral' in nature
+	-> Means they are short-lived (having short life) 
+	-> They can die and be revived at anytime.
+		--> Why would a Container die?
+			Common reason: Lack of resources on a host (if resources are allocated to one of the containers)
+	-> Hence, Problem #1 - Single Host dependency	
+
+	2. Containers require user's manual intervention to boot up.
+	-> At Enterprise level, there will be 10K and above containers.
+	-> DevOps engineer cannot always monitor all these containers; Cannot always check which of these are running / crashed.
+	-> At its core, Docker or container runtimes do not implicitly provide this feature.
+	-> This feature to bootup automatically is referred as 'Auto-Healing' in this context.
+	-> Hence, Problem #2 - Auto-Healing feature not present.
+	
+3. Containers, when booted up, cannot use memory beyond whats allocated.
+	-> When network traffic increases, containers cannot meet the demand as required.
+	-> DevOps Engineer would usually have to decide and boot up new containers to meet the traffic demand.
+	-> Hence, Problem #3 - Auto-Scaling feature note present.
+
+4. Containers do not support Enterprises level Standards in its core nature.
+	-> At Enterprise level, few of the below features are expected from an Application running on Production :
+		1) Is behind a "Load Balancer"
+		2) Has "API Gateway" configuration
+		3) Supports "Scaling"
+		4) Supports "Healing" (Like Auto-Healing)
+	-> Hence, Problem #3 - Does not support Enterprise level Standards by itself
+
+In summary, problems with Containers and using Containers only in Production are:
+	1) Single Host Dependency / Missing preemptive Cluster support 
+	2) Auto-Healing
+	3) Auto-Scaling
+	4) Enterprise standards support
+
+5. (My take on this) One major problem with Docker's Container runtime:
+	-> Changing any Instruction in middle will make it re-run all the instructions afterwards from scratch.
+	
+	
+K8s / Kubernetes Architecture:
+- There are two planes:
+1) Control Plane
+2) Data Plane
+
+- K8s always work in a Master-Worker architecture.
+-- Workers:
+	--> They form the "Data Plane"
+	--> "Pods" are created in the Worker nodes.
+	--> "kubelet" is a daemon process which controls the lifecycle of Pods.
+	--> "kube_proxy" is the default network interface for K8s Worker nodes.
+		---> They use the Host machine 'iptables' to manage IP configurations.
+	--> "Container runtime" such as "containerd" or "cri-o" for running containers from docker or other container platforms respectively.
+-- Master(s):
+	--> They form the "Control Plane"
+	--> "API Server" is the core of K8s and present in the Control Plane. 
+		---> It accepts all types of K8s CLI commands and requests from Data Plane.
+		---> Exposes K8s to external world.
+	--> "Scheduler" helps with scheduling Pods of Data Plane, on requests of API Server.
+	--> "etcd" is a Key-Value store which stores the metadata of the entire K8s cluster.
+	--> "Controller Manager" is responsible for managing different cluster features or controllers such as "Replica sets".
+	--> "Cloud Controller Manager" (CCM) is an open source utility on top of which Cloud Providers can write some sort of logic to run Kubernetes on their systems such that end users can use K8s on their respective Cloud.
+		---> Like Terraform 
+	
+- K8s Production Systems:
+-- K8s / Kubernetes as a technology has its community-provided Dev environment tools and Prod environment tools.
+-- Dev Environment providers (not equivalent to full-blown K8s clusters) such as:
+	--- Minikube
+	--- Microk8s
+	---	kind (Kubernetes-IN-Docker)
+	--- k3s etc
+-- Prod Environment providers such as (in the order of their popularity as of Feb 2023):
+	--- Kuberneters (itself, CNCF-backed community supported)
+	
+	--- Openshift (Implementation by Redhat)
+	--- Rancher (Implemented by SUSE)
+	--- Tanzu (Implemented by VMWare)
+	--- EKS (Elastic Kubernetes Service - By Amazon Cloud)
+	--- AKS (Azure Kubernetes Service - By Azure Cloud)
+	--- GKS (Google Kubernetes Service - By Google Cloud) 	
+
+--* Diff between Docker Swarm & Kubernetes? 
+	--- Docker Swarm -> Container Orchestration Tool provided by Docker themselves
+		---- Docker Swarm = simpler, faster setup, less powerful, good for small/simple use cases.
+		---- Kubernetes = powerful, complex, standard for enterprise, huge ecosystem.
+		
+-- "kubectl" CLI is used to get operate on K8s Environments.
+	--- "kubectl get nodes" --> Gives info on Cluster nodes (control + data plane)
+	--- "kubectl get pods" --> Gives info on Pods 
+	--- "... -o wide" ---> Gives additional info on the ran command:
+			----> E.g. "kubectl get pods -o wide" : Gives additional info on Pods
+	--- "kubectl get events -o custom-columns=LAST_SEEN:.lastTimestamp,TYPE:.type,REASON:.reason,OBJECT:.object,MESSAGE:.message --sort-by=.lastTimestamp" --> Gives all events triggered on the created Pod. Here, "custom-columns" is used to update the LAST_SEEN column to show "timestamp" instead of "50s ago"
+	
+* Pods *
+- Smallest deployable units in a Kubernetes Environment (Kubernetes Cluster).
+- They are like containers but these are technically, logical structures, which can also consist of group of containers.
+- A "Pod" can consist of 1 or a group of containers in them.
+- Pods Container Patterns: 
+	1) Init Containers:
+		--> Part of a group of containers within a Pod.
+		--> "Init" Containers are boot up before the main container starts.
+		--> Used for Initializing / preparing any type of application / DB service before the main application starts.
+		--> They are declared using "initContainers" property.
+		--> Example:
+		..
+		spec:
+		  initContainers:
+			- name: init-myservice
+			  image: busybox:1.36
+			  command: ['sh', '-c', 'echo "Initializing..." && sleep 5']
+		..
+		
+	2) Side-car containers:
+		--> Part of a group of containers within a Pod.
+		--> "Side-car" containers are ideally boot up 'with or after' main container starts. 
+			---> Kubernetes DOES NOT guarantee this ordering. 
+			---> Engineers / Developers need implement this ordering using "sleep in ENTRYPOINT of the image" or 'Readiness/liveness' probes.
+		--> Their role is to carry out "additional" support-type activities such as sending logs from the main container elsewhere.
+		--> They don't have any special property like init-containers have.
+		
+- In Kubernetes, Pods are created by defining their attributes in a YAML file. YAML file can be named anything.
+	-- E.g. pod1.yaml
+	--> "kubectl" CLI can be used to spin up a POD with its defined pod1.yaml in a K8s environment such as Minikube or Kubernetes.
+- NOTE: When running "kubectl get pods", it shows "READY - 1/1". 
+	-- Here, "1/1" means the created Pod has "1" container and "1" container (i.e. the same container) is ready within the Pod.
+
+
+* Deployments *
+- It is a Kubernetes resource which consist of 1 or group of Pod(s).
+- It provides advanced features over a Pod such as :
+	1. Supporting Auto-Healing 
+	2. Supporting Auto-Scaling
+		- Auto-Scaling requires "HPA" (Horizontal Pod Autoscaler) to be implemented.
+		- Otherwise, scaling is done manually.
+	3. Version-Control for managing various Deployment versions
+		3.1 Has capabilities of "rolling updates" such as 'rollback to previous deployment state'
+		
+- It makes use of various "Controllers" to ensure "desired" state given in deployment YAML file is always achieved.
+- On Production systems, we always deploy a "Deployment" and not standalone Pods.
+
+** Controller - ReplicaSet **
+[ Whats a Controller? ] 
+	- Logical entities or loops that always ensure to reconcile the desired state with the actual state of a deployment.
+	- E.g. If Engineer declared number of replicas to be 8, and after booting if any one of the Pods are not in READY state, Controller will :
+		Observe -> 
+		Compare (with YAML for desired state) -> 
+		Act -> 
+		Repeat (monitoring)
+
+- A "ReplicaSet" is one of the Kubernetes Controller which is declared in a Deployment YAML.
+- This is where Engineers provide the desired number of replicas they want, for a deployment.
+- A "ReplicaSet" is managed by Deployments automatically.

@@ -1,0 +1,88 @@
+Docker commands:
+
+ENTRYPOINT :-
+- Has non-overridable executable value
+
+CMD :-
+- Values given here can be overridden during "docker run" 
+
+
+* Docker images - Distroless images:
+- A base image with no O.S. level commands but only a runtime of a programming language such as Python / Rust / Go is called 
+  a Distroless image.
+* Docker images - Multi-Stage images:
+- In a single Dockerfile, A base image can be given an alias and like a stage, we can use multiple FROM statements and COPY artifacts from previous stage (COPY --from) 
+
+* Bind Mounts vs Volumes:
+
+1) Bind Mounts:-
+- Make use of your local filesystem
+- Has no explicit lifecycle
+- Cannot be shared between different hosts
+    -- Unless we use NFS (Network File System) on local or cloud.
+- Example:
+    docker run -d -v /myhost/folder1:/app my-image
+or (for new versions)
+    docker run -d --mount type=bind,source=/myhost/folder1,target=/app my-image
+
+2) Volumes:-
+- Creates a seperate logical disk space that can be used by various containers
+- Has an explicit lifecycle
+- Can be shared between different hosts / externally mounted.
+- Example:
+    docker volume create mydata
+    docker run -d -v mydata:/app my-image
+or (for new versions)
+    docker volume create mydata
+    docker run -d --mount type=volume,source=mydata,target=/app my-image
+
+
+** Side-note: tmpfs
+- Linux has an inbuilt functionality which provides users a RAM-backed temporary storage.
+- It is super fast and volatile, can be used for secrets or temp files.
+- Primary usecases:
+    -- secrets
+    -- Caching/temp storage
+    -- Build steps (to store compiled assets temporarily)
+    -- Testing 
+- Example:
+    docker run -d --mount type=tmpfs,target=/app/tmp my-image
+- Shortcut command:
+    docker run --tmpfs /cache:rw,size=64m my-image
+
+- When not to use tmpfs? 
+    -- If your data needs to be "persisted"
+    -- If your app needs more space than RAM
+    -- If data should not wipe off after container shuts down.
+ 
+
+* Docker Networking (also can be considered as 'Container Networking'):
+
+- 3 types of networking:
+    1) Bridge Networking
+    2) Host 
+    3) Overlay
+1) Bridge Networking:-
+- Default networking mode given to all containers 
+- A way to communicate (Bridge) with the outside world via a virtual Interface created on Host
+- By default all Hosts have "eth0" interface for network connectivity.
+    -- Docker creates a "veth0" (or referred/seen as "docker0") as a "bridge" for networking on Internet via Host.
+- We can also create custom Bridge Networks to isolate containers (or groups of containers) by assigning them this custom 
+    Bridge network.
+- Example:
+    docker network create secure-network
+    docker run --network=secure-network --name payments_container paymentsimg
+    -> So "payments_container" will have a different HostID (CIDR) compared to other containers which are not assigned 
+        this network.
+- 'docker inspect' command ~> check "Networks/IPAddress" ~> It will have its own assigned Virtual IP.
+
+2) Host Networking:- 
+-  A way to communicate with the outside world USING the Host interface (already existing on Host)
+- 'docker inspect' command ~> check "Networks/IPAddress" ~> It will be empty (meaning Host IP should be used to communicate with the container)
+- Example:
+    docker run --network=host --name backend backendimg
+    -> So "backend" container will not spin up any Virtual IP. It will be accessible directly on the Host machine IP.
+
+3) Overlay Networking:-
+- A way to communicate between multiple containers across multiple Hosts.
+- Usually used in large docker-based environments where containers are spun up using some Orchestration service such as "docker swarm" or "k8s"

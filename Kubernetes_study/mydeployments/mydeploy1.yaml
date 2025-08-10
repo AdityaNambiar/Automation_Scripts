@@ -1,0 +1,67 @@
+# Created below YAML using the command:
+# kubectl get deployment nginx -o yaml --export > mydeployments/mydeploy1.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    deployment.kubernetes.io/revision: "7"
+    kubectl.kubernetes.io/last-applied-configuration: |
+      {"apiVersion":"apps/v1","kind":"Deployment","metadata":{"annotations":{},"name":"nginx","namespace":"default"},"spec":{"replicas":1,"selector":{"matchLabels":{"app":"nginx"}},"template":{"metadata":{"labels":{"app":"nginx"}},"spec":{"containers":[{"image":"nginx:1.14.2","name":"nginx","ports":[{"containerPort":80}]}]}}}}
+  creationTimestamp: "2025-08-10T17:00:38Z"
+  generation: 10
+  name: nginx
+  namespace: default
+  resourceVersion: "19281"
+  uid: fe396bed-2734-469b-9569-d153c97f7b91
+spec:
+  progressDeadlineSeconds: 600
+  replicas: 5
+  revisionHistoryLimit: 10
+  selector:
+    matchLabels:
+      app: nginx
+  strategy:
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 25%
+    type: RollingUpdate
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: nginx
+    spec:
+      containers:
+      - image: redis:alpine3.22
+        imagePullPolicy: IfNotPresent
+        name: nginx
+        ports:
+        - containerPort: 80
+          protocol: TCP
+        resources: {}
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always
+      schedulerName: default-scheduler
+      securityContext: {}
+      terminationGracePeriodSeconds: 30
+status:
+  availableReplicas: 5
+  conditions:
+  - lastTransitionTime: "2025-08-10T17:17:59Z"
+    lastUpdateTime: "2025-08-10T17:17:59Z"
+    message: Deployment has minimum availability.
+    reason: MinimumReplicasAvailable
+    status: "True"
+    type: Available
+  - lastTransitionTime: "2025-08-10T17:00:38Z"
+    lastUpdateTime: "2025-08-10T17:25:56Z"
+    message: ReplicaSet "nginx-7bdf4b9cc7" has successfully progressed.
+    reason: NewReplicaSetAvailable
+    status: "True"
+    type: Progressing
+  observedGeneration: 10
+  readyReplicas: 5
+  replicas: 5
+  updatedReplicas: 5
