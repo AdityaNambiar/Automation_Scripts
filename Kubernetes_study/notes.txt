@@ -161,3 +161,51 @@ K8s / Kubernetes Architecture:
 
 
 * Services *
+- A Service is a K8s resource which provides stable networking endpoint (static IP & DNS name) for a set of Pods 
+- These provide below features to a Deployment:
+	1) Load Balancing
+	2) Service Discovery
+	3) Expose the K8s cluster to outside world
+	
+1.1 Load Balancing :
+-- Pods are Ephemeral in nature, can restart frequently.
+-- When Pods restart, their IP address(s) will also change.
+-- In such case, its difficult to maintain such a list of IPs.
+-- Here, Services will provide a static IP / domain such that all traffic can be routed to the all Pods that it is observing. 
+	--- K8s services utilizes 'kube-dns/CoreDNS' component to provide constant DNS.
+	--- K8s services utilizes 'kube-proxy' component to ensure Service's IP is mapped constantly to healthy backend Pods.
+
+2.1 Service (Pod) Discovery:
+-- Services discover Pods based on label selectors.
+-- When a Pod crashes and a new Pod is created by the ReplicaSet, if it has the same labels, the Service automatically starts routing to it — no change to the Service’s IP.
+-- Example: A Service with selector app=Payments will send traffic to all matching Pods and ignore Pods with other labels like app=Logout.
+
+3.1 Expose the K8s cluster to outside world :
+-- K8s Services can help with exposing a K8s cluster at different levels of accessibility.
+-- There are 3 modes of exposure:
+	3.1.1 ClusterIP
+		---> This mode is the default.
+		---> It means, application within the Pod will only be able to accessible within the K8s Cluster
+		---> The primary advantage of such mode is - Service Discovery, Load Balancing.
+	3.1.2 NodePort
+		---> This mode exposes the K8s cluster applications over a VPC, Host Machine, Cloud instance etc.
+		---> It means, application will be available only within the Organization network.
+		---> It also provides advantages of - Service Discovery, Load Balancing
+	3.1.3 Load Balancer
+		---> This mode exposes the K8s cluster applications over Public IP / Internet.
+		---> It means, applications can be accessed by anyone anywhere in the world.
+		---> Currently this mode is not supported in Minikube / Dev Environments.
+			----> E.g. 
+			
+				> On AWS, we can configure a EKS's K8s Service with mode Load Balancer.
+				> AWS will then provide a Public IP with help of ELB (Elastic Load Balancer)
+				> Internally, Kubernetes / K8s utilizes CCM (Cloud Control Manager) and invokes the AWS implementation to provide this Public IP on ELB.
+
+Doubts: 
+1. Services - kube_proxy? 
+	-> If your mind is free read- https://mayankshah.dev/blog/demystifying-kube-proxy/#how-to-read-this-blog-post
+2. "minikube service" - what is the mode of service this spins up?
+3. 'kubectl port-forward' vs Service mode 'NodePort' ?
+
+- Kubeshark:
+-- Container Monitoring service
