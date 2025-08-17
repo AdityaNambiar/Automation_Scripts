@@ -201,6 +201,9 @@ K8s / Kubernetes Architecture:
 				> AWS will then provide a Public IP with help of ELB (Elastic Load Balancer)
 				> Internally, Kubernetes / K8s utilizes CCM (Cloud Control Manager) and invokes the AWS implementation to provide this Public IP on ELB.
 
+- *IMP* 
+	--> Services (especially type=LoadBalancer) → behave like a Network Load Balancer (L4 / TCP, UDP level).
+
 Doubts: 
 1. Services - kube_proxy? 
 	-> If your mind is free read- https://mayankshah.dev/blog/demystifying-kube-proxy/#how-to-read-this-blog-post
@@ -209,3 +212,31 @@ Doubts:
 
 - Kubeshark:
 -- Container Monitoring service
+
+
+* Ingress *
+- Why Ingress was introduced? 
+	-- Limitations / Cons of using only Services:
+		1. Enterprise expected features such as flexible LoadBalancing & TLS Security missing
+			> Services provided a LoadBalancer type which only worked on Round-Robin algo.
+			> There was no upfront solution to implement Security on Services.
+			> Services cannot provide features such as Ratio-based LB, Path-based, Sticky persistence etc.
+		2. Load Balancer type of Services would spin up new Static IPs - increasing Cloud Providers costs for provisioning the IP.
+- Ingress is a Kubernetes resource that configures L7 (HTTP/HTTPS) Load Balancing features specific to the application / deployments.
+	-- Provides advanced features like host-based routing, path-based routing, TLS termination.
+
+- *IMP* Difference:
+	> IP provisioning:
+	--> Service LoadBalancer = one IP per service.
+	--> Ingress = one IP for multiple services/apps via routing rules.
+	> In Cloud terminology for LBs:
+	--> Services (especially type=LoadBalancer) → behave like a Network Load Balancer (L4 / TCP, UDP level).
+	--> Ingress → behaves like an Application / HTTP Load Balancer (L7 / HTTP, HTTPS).
+	
+- Kubernetes decided on an architecture for Clusters such that Application level Load Balancing capabilities can be provided by Ingress resource. 
+	-- However, for additional Enterprise level features that a third-party LB provides, they need to sync the Ingress K8s resource with help of a 'Ingress Controller'
+	-- Any third-party Load Balancer company such as NGINX, HA-Proxy, F5 etc will implement their own Ingress Controllers and users can install this Ingress Controller onto their instances where K8s Cluster is running.
+	-- Parallely, Users / Engineers will create an Ingress Resource on the K8s Cluster.
+	-- Once Ingress Controller is installed, it will automatically sync with the configured Ingress Resource and then provide an IP that can be mapped to a Domain name, helping to serve an application.
+
+	

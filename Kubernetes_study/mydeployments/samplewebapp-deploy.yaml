@@ -1,0 +1,21 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: sample-web-app
+  labels:
+    app: sample-web-app
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: sample-web-app
+  template:
+    metadata:
+      labels:
+        app: sample-web-app
+    spec:
+      containers:
+      - name: sample-web-app
+        image: docker.io/adinambiar24/samplewebapp:latest
+        ports:
+        - containerPort: 3000

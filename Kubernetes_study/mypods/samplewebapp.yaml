@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: sample-web-app
+spec:
+  containers:
+  - name: sample-web-app
+    image: docker.io/adinambiar24/samplewebapp:latest
+    ports:
+    - containerPort: 3000

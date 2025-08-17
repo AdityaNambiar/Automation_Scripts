@@ -11,3 +11,7 @@ Minikube/uninstall.exe
 Minikube/update_path.ps1
 **/nohup.out
 Kubernetes_study/helm-v3.18.5-windows-amd64/
+Kubernetes_study/myreactapp1/node_modules/
+Kubernetes_study/myreactapp1/build/
+Kubernetes_study/myreactapp1/package-lock.json
+*.bak
