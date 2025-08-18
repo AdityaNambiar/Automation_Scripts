@@ -104,7 +104,7 @@ resource "oci_core_default_security_list" "std_sec_list" {
     source   = "0.0.0.0/0" // This allows all incoming traffic from any source
   }
   egress_security_rules {
-    protocol = "all"
+    protocol    = "all"
     destination = "0.0.0.0/0" // This allows all outgoing traffic to any destination
   }
 }

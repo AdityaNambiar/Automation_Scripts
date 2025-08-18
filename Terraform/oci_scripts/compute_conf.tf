@@ -7,7 +7,7 @@ data "oci_core_images" "oci_learn_imgs" {
   compartment_id           = var.compartmentId
   operating_system         = "Oracle Linux"
   operating_system_version = "9"
-  shape = "VM.Standard.E2.1.Micro" // Ensure this shape is available in your region
+  shape                    = "VM.Standard.E2.1.Micro" // Ensure this shape is available in your region
 }
 
 resource "oci_core_instance" "oci_learn_inst1" {
