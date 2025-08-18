@@ -5,3 +5,5 @@ token.txt
 Terraform/oci_scripts/.terraform/providers/registry.terraform.io/oracle/oci/7.9.0/windows_amd64/terraform-provider-oci_v7.9.0
 *.auto.tfvarsssh_pair
 Terraform/oci_Scripts/ssh_pair
+Docker_study
+Kubernetes_study
