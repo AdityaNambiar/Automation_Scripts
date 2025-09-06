@@ -15,3 +15,5 @@ Kubernetes_study/myreactapp1/node_modules/
 Kubernetes_study/myreactapp1/build/
 Kubernetes_study/myreactapp1/package-lock.json
 *.bak
+
+demo-observability/target/*
