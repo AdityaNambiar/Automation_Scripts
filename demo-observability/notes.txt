@@ -1,0 +1,28 @@
+demo-observability app stuff:
+
+Commands:
+
+To run: mvn spring-boot:run
+To build: mvn clean package
+
+To run built jar: 
+    java -jar target/demo-1.0.0.jar
+
+
+Step 5: Test Endpoints
+
+Once running, open your browser:
+
+Health: http://localhost:8080/api/health
+
+Greeting: http://localhost:8080/api/greet?name=Aditya
+
+Error: http://localhost:8080/api/error
+
+Observability endpoints (from Actuator):
+
+Metrics: http://localhost:8080/actuator/metrics
+
+Prometheus scrape: http://localhost:8080/actuator/prometheus
+
+Health (infra-level): http://localhost:8080/actuator/health
