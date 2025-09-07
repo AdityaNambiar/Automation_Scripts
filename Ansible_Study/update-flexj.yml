@@ -1,0 +1,6 @@
+---
+- name: My First Playbook to update Flexj.properties
+  hosts: my_ec2
+  roles:
+     - demo
+

@@ -1,0 +1,8 @@
+#SPDX-License-Identifier: MIT-0
+---
+# tasks file for demo
+- name: Update flexj.properties
+  lineinfile: 
+    path: /home/ec2-user/flexj.properties
+    line: DB Credentials 3 added
+    state: absent

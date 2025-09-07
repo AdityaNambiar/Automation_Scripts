@@ -1,0 +1,11 @@
+---
+- name: Update Apache Log4j2 Log Level
+  hosts: my_ec2
+  become: no # Explicitly mentioning this playbook does not require to login to sudo
+  
+  tasks:
+      - name: Run only Log4j2 Log Level update task 
+        import_role:
+          name: demo
+          tasks_from: upd_log4j2.yml  # Pick tasks specifically from this YAML manifest
+   

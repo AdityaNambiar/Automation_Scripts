@@ -1,0 +1,27 @@
+Advantages / Features of Ansible:
+
+1. 'Push' methodology for Configuration Mnaagement.
+2. Agentless (Only requirement is.. the target nodes must have python installed)
+3. Ansible has an Inventory / Dynamic Inventory
+4. It supports Windows & Linux both.
+5. It is written in Python.
+
+-> Ansible's control node functionality requires a Linux/Unix environment.
+
+Issues faced when running ansible:
+
+1. Python version on Control node is 3.8 whereas on Managed node is 3.12.
+>> This caused below error:
+MODULE_FAILURE: ImportError: cannot import name 'Mapping' from 'collections'
+
+2. Create and Backup in lineinfile doesn't work together
+>> backup: yes only works if the file already exists.
+>> create: yes only works if the file doesn’t exist.
+>> If you combine them → the create path wins, but since there’s no file yet, there’s nothing to back up
+
+Commands tried:
+
+1. ansible -vvv -i inventory my_ec2 -m "shell" -a "touch flexj.properties"
+
+>> Here, "-vvv" is verbose-level-3. Ansible will create a new file "flexj.properties".
+>> I have provided inventory file and gave "my_ec2" (i.e. host-group)

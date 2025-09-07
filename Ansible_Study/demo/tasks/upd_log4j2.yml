@@ -1,0 +1,42 @@
+---
+- name: Update Log4j2 Log level
+  lineinfile: 
+        path: /home/ec2-user/log4j2.properties
+        line: rootLogger.logLevel = DEBUG
+        #state: present   # Requires the given line is present as it is in the remote file
+        create: yes
+- name: Take Backup and update Log4j2 Log Level with new line
+  lineinfile:
+        path: /home/ec2-user/log4j2.properties
+        line: fcrjlog.appender.logLevel = DEBUG
+        #state: present   
+
+- name: Take Backup and update Log4j2 Log Level with new line
+  lineinfile:
+        path: /home/ec2-user/log4j2.properties
+        line: fcrdebuglog.appender.logLevel = DEBUG
+
+- name: Replace all logLevel with FATAL
+  replace: 
+        path: /home/ec2-user/log4j2.properties
+        regexp: 'logLevel\s*=\s.*'
+        replace: 'logLevel = FATAL'
+- name: Capture file content
+  shell: cat /home/ec2-user/log4j2.properties
+  register: modified_file    # Registering a variable named "modified_file" where it will spew out the content of modified file
+
+- name: Rollback all logLevel from FATAL to DEBUG
+  replace:
+        path: /home/ec2-user/log4j2.properties
+        regexp: 'logLevel\s*=\s.*'
+        replace: 'logLevel = DEBUG'
+- name: Capture file content
+  shell: cat /home/ec2-user/log4j2.properties
+  register: rolledback_file    # Registering a variable named "modified_file" where it will spew out the content of modified file
+
+- name: Debug Info Init
+  debug:
+     msg:
+       - "Replace task output:  {{ modified_file.stdout_lines }}"
+       - "Rollback task output: {{ rolledback_file.stdout_lines }}"
+
