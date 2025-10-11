@@ -2,6 +2,7 @@
 *.lock.*
 *.zip
 *.rar
+*.msi
 token.txt
 Terraform/oci_scripts/.terraform/providers/registry.terraform.io/oracle/oci/7.9.0/windows_amd64/terraform-provider-oci_v7.9.0
 Terraform/oci_scripts/ssh_pair/*
@@ -21,3 +22,4 @@ Kubernetes_study/myreactapp1/package-lock.json
 
 
 demo-observability
+Jenkins_Study/Jenkins
