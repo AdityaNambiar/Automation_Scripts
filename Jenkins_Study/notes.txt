@@ -1,0 +1,4 @@
+Jenkins :
+
+-> Pipeline projects allow us to give Declarative files like Jenkinsfile in this case.
+
