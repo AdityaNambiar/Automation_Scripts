@@ -16,5 +16,8 @@ Kubernetes_study/myreactapp1/build/
 Kubernetes_study/myreactapp1/package-lock.json
 *.bak
 
+Jenkins_Study
+demo-observability
+
 **/*/.env
 **/*/.gitignore
