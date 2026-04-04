@@ -1,2 +1,3 @@
 [my_ec2]
 3.108.190.197 ansible_ssh_private_key_file=~/.ssh/keypair2-ssh.pem ansible_user=ec2-user
+65.0.130.128 ansible_ssh_private_key_file=~/.ssh/ansible_managednodeprivkey.pem ansible_user=ec2-user

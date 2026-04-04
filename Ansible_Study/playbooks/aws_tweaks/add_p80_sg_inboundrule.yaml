@@ -1,0 +1,14 @@
+---
+- name: Add port 80 to the Security Group of my_ec2 instance
+  hosts: my_ec2
+
+  tasks:
+    - amazon.aws.ec2_security_group:
+        name: TrimDicePublicSG        # Must have same SG name, if goal is to modify existing EC2 instance 
+        description: My Security Group
+        region: ap-south-1
+        rules:
+          - proto: tcp
+            from_port: 80
+            to_port: 80
+            cidr_ip: 0.0.0.0/0

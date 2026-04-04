@@ -1,0 +1,21 @@
+---
+- name: Deploy static website on HTTPD webserver.
+  hosts: my_ec2
+  become: true  # Promote logged in user to go 'sudo su -' 
+   
+  tasks:
+    - name: Install apache webserver
+      ansible.builtin.yum:
+        name: httpd
+        state: present
+        update_cache: yes
+    - name: Enable and start httpd service
+      ansible.builtin.service:
+        name: httpd
+        enabled: yes
+        state: started
+    - name: Copy over static website files
+      ansible.builtin.copy:
+        src: index.html
+        dest: /var/www/html/
+        

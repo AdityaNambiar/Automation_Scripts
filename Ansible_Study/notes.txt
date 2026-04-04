@@ -6,7 +6,28 @@ Advantages / Features of Ansible:
 4. It supports Windows & Linux both.
 5. It is written in Python.
 
--> Ansible's control node functionality requires a Linux/Unix environment.
+-> Ansible's control node functionality requires a Linux/Unix environment & Passwordless authentication
+
+Passwordless authentication setup:
+
+1.  Create a key pair :
+        ssh-keygen -t rsa -b 4096
+2.  Copy the public key onto the target machine's "~/.ssh/authorized_keys" path:
+        (copy and paste the contents of your machine's private key in a file named "ec2_inst.key" - create if you don't have one)
+        ssh-copy-id -f -i ansible_managed_node.pub -o "IdentityFile=ec2_inst.key" ec2-user@65.0.130.128
+3.  (Optional) Add a Host config entry in ~/.ssh/config file.
+        Host ansible-managed-node1
+            HostName 65.0.130.128
+            User ec2-user
+            IdentityFile ~/ansible_study/ansible_managed_node
+            Port 22
+
+4. From the Control node, run below command to login to Managed node
+        ssh ansible-managed-node1
+
+5. If it works, add below in ansible inventory file:
+        [my_ec2]
+        ansible-managed-node1
 
 Issues faced when running ansible:
 
@@ -19,9 +40,99 @@ MODULE_FAILURE: ImportError: cannot import name 'Mapping' from 'collections'
 >> create: yes only works if the file doesn’t exist.
 >> If you combine them → the create path wins, but since there’s no file yet, there’s nothing to back up
 
+3. When using AWS module to update a security group rule to allow port 80: 
+    Error: Failed to import the required Python library (botocore and boto3)
+>> boto3 needs to be installed on target machine as well (one time setup)
+
+4. [Same usecase as #3] 
+    Error: botocore.exceptions.NoCredentialsError: Unable to locate credentials
+>> 
+
+Grouping of Hosts:
+> In the inventory file, we can provide one or more Hosts and put them under a group.
+E.g. 
+
+    - my_inventory.ini:
+    app-goldcopy-serv1
+    app-goldcopy-serv2
+    app-preprod-serv1
+    app-preprod-serv2
+
+    can be written as:
+
+    - my_inventory.ini:
+
+    [goldcopy]
+    app-goldcopy-serv1
+    app-goldcopy-serv2
+
+    [preprod]
+    app-preprod-serv1
+    app-preprod-serv2
+
+Variables in Ansible:
+ > Ansible supports to define some variables at either individual Host level, or at 'group of Hosts' level 
+ > For duplicate variable definitions, ansible will prioritize such as :
+    Host-level vars          ----> top-most priority
+    host_vars/ directory
+    Group-level vars (group:vars block)
+    group_vars/ directory
+    group_vars/all
+    Playbook vars
+    Role defaults            ----> lowest priority
+
+     E.g. 
+
+        [goldcopy]
+
+        app-goldcopy-serv1 ansible_user=orcluser1
+        app-goldcopy-serv2 
+
+        [goldcopy:vars]
+        ansible_ssh_private_key_file=~/.ssh/goldcopy_servs.pem
+
+Playbooks:
+- Ansible Playbooks are a set of tasks known as "Plays"
+- A playbook is written in YAML syntax file.
+- To run playbooks, below command is written:
+    ansible-playbook -i inventory.ini my_first_playbook.YAML
+- Task:
+    -- A task in a playbook is made to invoke one module.
+    -- One or more (set of) tasks make up a "Play"
+- Modules:
+    -- Its a reusable piece of code that performs a specific task.
+    -- It can be either "builtin" (official, shipped with Ansible) or "custom" (community built, available with Ansible Galaxy) 
+
+- Playbooks vs Adhoc-Commands:
+    -- When your task is simple (i.e. has 1 or 2 steps), go for Adhoc Commands
+    -- When your task is complex (i.e. has more than 10 steps) and/or you want the set of steps to be reusable, go for Playbooks.
+
+
+Adhoc Command:
+- Syntax:
+    ansible -i <location_to_inventory_file> -m <module_name> -a <args to pass to adhoc command> [hosts pattern] 
 Commands tried:
 
-1. ansible -vvv -i inventory my_ec2 -m "shell" -a "touch flexj.properties"
+1. ansible -i aws_inventory.ini -m ping all
+>> "Hello world" type command after you setup ansible inventory and everything
+
+2. ansible -vvv -i inventory my_ec2 -m "shell" -a "touch flexj.properties"
 
 >> Here, "-vvv" is verbose-level-3. Ansible will create a new file "flexj.properties".
 >> I have provided inventory file and gave "my_ec2" (i.e. host-group)
+
+3. ansible -i aws_inventory.ini my_ec2 -m "shell" -a "touch log4j2.properties"
+
+>> Creates a file named "log4j2.properties" on the home directory of managed node
+
+4. ansible -i aws_inventory.ini -m "copy" -a "src=/home/ec2-user/log4j2.properties dest=/home/ec2-user/myfolder/log4j2.properties remote_src=true" my_ec2
+
+>> Copies a file from 'src' (remote_src=true means src is on remote machine) to 'dest'
+
+5. ansible -i aws_inventory.ini -m "file" -a "dest=log4j2.properties state=absent" my_ec2
+
+>> Delete a file from path given in dest. (ansible tries to match the state. Absent state means no file should exist - means it should be deleted)
+
+6. ansible -i aws_inventory.ini my_ec2 -m "setup" -a "filter=ansible_all_ipv4_addresses"
+
+>> Show the managed nodes IP.

@@ -1,0 +1,9 @@
+---
+- name: Move AWS credentials to the target managed nodes
+  hosts: my_ec2
+
+  tasks:
+    - name: Copy credentials file to .aws folder (create if absent)
+      ansible.builtin.copy:
+        src: credentials
+        dest: ~/.aws/  # if ending with '/' then the file will be autocreated *system autocreates directories*
