@@ -91,6 +91,8 @@ Variables in Ansible:
         [goldcopy:vars]
         ansible_ssh_private_key_file=~/.ssh/goldcopy_servs.pem
 
+Roles:
+    
 Playbooks:
 - Ansible Playbooks are a set of tasks known as "Plays"
 - A playbook is written in YAML syntax file.
@@ -107,10 +109,10 @@ Playbooks:
     -- When your task is simple (i.e. has 1 or 2 steps), go for Adhoc Commands
     -- When your task is complex (i.e. has more than 10 steps) and/or you want the set of steps to be reusable, go for Playbooks.
 
-
 Adhoc Command:
 - Syntax:
     ansible -i <location_to_inventory_file> -m <module_name> -a <args to pass to adhoc command> [hosts pattern] 
+
 Commands tried:
 
 1. ansible -i aws_inventory.ini -m ping all
