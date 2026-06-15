@@ -46,7 +46,10 @@ MODULE_FAILURE: ImportError: cannot import name 'Mapping' from 'collections'
 
 4. [Same usecase as #3] 
     Error: botocore.exceptions.NoCredentialsError: Unable to locate credentials
->> 
+>> export variables directly:
+    export AWS_ACCESS_KEY_ID=your_key
+    export AWS_SECRET_ACCESS_KEY=your_secret
+    export AWS_DEFAULT_REGION=ap-south-1
 
 Grouping of Hosts:
 > In the inventory file, we can provide one or more Hosts and put them under a group.
