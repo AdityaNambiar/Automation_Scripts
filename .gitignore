@@ -3,6 +3,7 @@
 *.zip
 *.rar
 token.txt
+rootkey.csv
 Terraform/oci_scripts/.terraform/providers/registry.terraform.io/oracle/oci/7.9.0/windows_amd64/terraform-provider-oci_v7.9.0
 Terraform/oci_scripts/ssh_pair/*
 Minikube/logo.ico 
@@ -17,6 +18,7 @@ Kubernetes_study/myreactapp1/package-lock.json
 *.bak
 
 Jenkins_Study/
-Terraform/aws_Scripts/
+Terraform/aws_Scripts/terraform.*
+Terraform/aws_Scripts/.terraform*
 demo-observability/
 Ansible_Study/
